@@ -15,10 +15,11 @@ const userAccounts = [
         nama_tampilan: 'Kirani XI TJAT 2'
     },
     {
-        username: 'siswa',
-        password: 'belajar',
-        nama_tampilan: 'Siswa Rajin'
+        username: 'adit',
+        password: 'adit1',
+        nama_tampilan: 'Aditya Pratama Putra XI TJAT 2'
     }
 
 ];
+
 
