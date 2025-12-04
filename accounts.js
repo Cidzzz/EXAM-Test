@@ -5,9 +5,9 @@ const userAccounts = [
         nama_tampilan: 'Dwi'
     },
     {
-        username: 'kirani',
-        password: 'kirani',
-        nama_tampilan: 'Kirani XI TJAT 2'
+        username: 'olvans',
+        password: 'hama',
+        nama_tampilan: 'Gregorius X Siren XI TJAT 2'
     },
     {
         username: 'kirani',
@@ -21,3 +21,4 @@ const userAccounts = [
     }
 
 ];
+
