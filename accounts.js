@@ -6,17 +6,17 @@ const userAccounts = [
     },
     {
         username: 'olvans',
-        password: 'hama',
+        password: '123',
         nama_tampilan: 'Gregorius X Siren XI TJAT 2'
     },
     {
         username: 'kirani',
-        password: '38',
+        password: 'hama',
         nama_tampilan: 'Kirani XI TJAT 2'
     },
     {
         username: 'reja',
-        password: 'jaja',
+        password: '123',
         nama_tampilan: 'Reza Putra XI TJAT 2'
     },
     {
@@ -26,6 +26,7 @@ const userAccounts = [
     }
 
 ];
+
 
 
 
