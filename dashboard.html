@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Kuis Sekolah</title>
+    
+    <!-- START CSS: style.css -->
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --background: #F3F4F6;
+            --surface: #FFFFFF;
+            --text-main: #1F2937;
+            --text-sec: #6B7280;
+            --success: #10B981;
+            --error: #EF4444;
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        /* New Dashboard Layout Styles */
+        body {
+            display: block; /* Override flex behavior for new layout */
+            padding: 0;
+            min-height: 0;
+        }
+
+        .app-header {
+            background-color: var(--text-main);
+            color: var(--surface);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        .app-header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .app-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        #user-display-name {
+            font-weight: 600;
+        }
+
+        .logout-link {
+            color: var(--surface);
+            text-decoration: none;
+            font-size: 0.9rem;
+            background-color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .logout-link:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .app-main {
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align content to the top */
+        }
+
+        /* Original container for the quiz box */
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        /* === IMPROVED DASHBOARD STYLES === */
+        .dashboard {
+            padding: 40px;
+            text-align: center;
+        }
+
+        #welcome-message {
+            font-size: 2.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .dashboard p {
+            color: var(--text-sec);
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .subject-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .subject-card {
+            background: var(--surface);
+            border: 1px solid #E5E7EB;
+            border-radius: var(--radius);
+            padding: 30px 20px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .subject-card:hover {
+            border-color: var(--primary);
+            background-color: #F9FAFB;
+            transform: translateY(-5px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        
+        .subject-card .icon {
+            font-size: 2.5rem;
+        }
+
+        /* === NEW QUIZ LAYOUT STYLES === */
+        #quiz-view {
+            width: 90%;
+            max-width: 1400px; /* Wider layout */
+            background: transparent;
+            box-shadow: none;
+            display: none; /* Hidden by default */
+            margin: 0 auto; /* Center the container */
+        }
+        
+        .quiz-layout {
+            display: grid;
+            grid-template-columns: 240px 1fr; /* Sidebar and main content */
+            gap: 30px;
+            width: 100%;
+        }
+
+        /* Quiz Navigation Sidebar */
+        .quiz-nav {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 15px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            align-self: start; /* Stick to top */
+        }
+        
+        .quiz-nav-header {
+            text-align: center;
+            font-weight: 600;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .quiz-nav-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .nav-btn {
+            border: 1px solid #D1D5DB;
+            background: #F9FAFB;
+            color: var(--text-main);
+            border-radius: 6px;
+            aspect-ratio: 1 / 1;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .nav-btn:hover { background-color: #F3F4F6; }
+        .nav-btn.current { border-color: var(--primary); background: var(--primary); color: white; }
+        .nav-btn.answered { background: #DBEAFE; border-color: #93C5FD; }
+        .nav-btn.flagged::after {
+            content: '⚑';
+            position: absolute;
+            top: -2px;
+            right: 2px;
+            font-size: 10px;
+            color: var(--error);
+        }
+
+        /* Main Quiz Content */
+        .quiz-main {
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        
+        .quiz-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .back-to-dash {
+            text-decoration: none;
+            color: var(--text-sec);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+        .back-to-dash:hover {
+            color: var(--primary);
+        }
+        
+        .btn-icon {
+            background: transparent;
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+            padding: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-sec);
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-icon:hover { background: #F9FAFB; color: var(--text-main); }
+        .btn-icon.active { border-color: var(--error); background: #FEF2F2; color: var(--error); }
+        .btn-icon svg { stroke: currentColor; }
+
+
+        .question-text {
+            font-size: 1.25rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option-item {
+            background: white;
+            border: 2px solid #E5E7EB;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+            text-align: left;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .option-item:hover { background-color: #F9FAFB; }
+        .option-item.selected { border-color: var(--primary); background-color: #EEF2FF; }
+
+        /* Single Choice (A, B, C) */
+        .option-item.single-choice::before {
+            content: attr(data-prefix);
+            font-weight: 700;
+            background-color: #F3F4F6;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+        .option-item.single-choice.selected::before { background-color: var(--primary); color: white; }
+
+        /* Multiple Choice (Checkbox) */
+        .option-item.multiple-choice::before {
+            content: '';
+            width: 20px;
+            height: 20px;
+            border: 2px solid #9CA3AF;
+            border-radius: 4px;
+            margin-right: 15px;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+        .option-item.multiple-choice.selected::before {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            content: '✔';
+            color: white;
+            font-size: 14px;
+            text-align: center;
+            line-height: 18px;
+        }
+
+        /* Result Feedback Styles */
+        .option-item.correct { border-color: var(--success) !important; background-color: #F0FDF4 !important; }
+        .option-item.correct::before { background-color: var(--success) !important; color: white !important; }
+        
+        .option-item.wrong { border-color: var(--error) !important; background-color: #FEF2F2 !important; }
+        .option-item.wrong.selected::before { background-color: var(--error) !important; color: white !important; }
+
+        .quiz-footer {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between; /* Space out prev and next */
+        }
+        
+        /* Result View Styles */
+        .result-view {
+            display: none; /* Hidden by default */
+            padding: 40px;
+            text-align: center;
+        }
+
+        .result-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .final-score {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+
+        .result-actions {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Animation */
+        .fade-in {
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 480px) {
+            .subject-grid {
+                grid-template-columns: 1fr;
+            }
+            .dashboard, .quiz-container, .result-view {
+                padding: 25px;
+            }
+        }
+    </style>
+    <!-- END CSS -->
+</head>
+<body>
+
+    <header class="app-header">
+        <div class="app-header-container">
+            <h1 class="app-title">Dwi-Exam</h1>
+            <div class="user-profile">
+                <span id="user-display-name">Nama Pengguna</span>
+                <a href="#" id="logout-btn" class="logout-link">Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="app-main">
+        <div class="container" id="app-container">
+        
+        <!-- DASHBOARD VIEW -->
+        <div id="dashboard" class="dashboard fade-in">
+            <h1 id="welcome-message">Selamat Datang!</h1>
+            <p>Pilih mata pelajaran untuk memulai ujian.</p>
+            
+            <div class="subject-grid">
+                <button class="subject-card" onclick="startQuiz('AI')">
+                    <span class="icon">🤖</span>
+                    Tes Logika AI
+                </button>
+                <button class="subject-card" onclick="startQuiz('FTTH')">
+                    <span class="icon">🌐</span>
+                    Dasar Jaringan
+                </button>
+            </div>
+        </div>
+
+        <!-- QUIZ VIEW - NEW LAYOUT -->
+        <div id="quiz-view" class="fade-in">
+            <div class="quiz-layout">
+                <!-- Question Navigation Sidebar -->
+                <aside class="quiz-nav">
+                    <div class="quiz-nav-header">
+                        <p>Navigasi Soal</p>
+                    </div>
+                    <div id="question-nav-grid" class="quiz-nav-grid">
+                        <!-- Navigation buttons will be injected here by JS -->
+                    </div>
+                </aside>
+
+                <!-- Main Quiz Content -->
+                <main class="quiz-main">
+                    <div class="quiz-header">
+                        <a href="#" onclick="location.reload()" class="back-to-dash">‹ Kembali ke Dashboard</a>
+                        <span class="progress-text" id="progress-text">Soal 1 / 30</span>
+                        <div class="quiz-header-actions">
+                            <button id="flag-btn" class="btn-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+                                <span id="flag-btn-text">Tandai Soal</span>
+                            </button>
+                        </div>
+                    </div>
+        
+                    <div id="question-container">
+                        <h2 id="question-text" class="question-text">Loading...</h2>
+                        <div id="options-container" class="options-list">
+                            <!-- Options will be injected here -->
+                        </div>
+                    </div>
+        
+                    <div class="quiz-footer">
+                        <button id="prev-btn" class="btn btn-outline" onclick="prevQuestion()">Sebelumnya</button>
+                        <button id="next-btn" class="btn" onclick="nextQuestion()" disabled>Lanjut</button>
+                    </div>
+                </main>
+            </div>
+        </div>
+
+        <!-- RESULT VIEW -->
+        <div id="result-view" class="result-view fade-in">
+            <div class="result-icon">🏆</div>
+            <h2>Kuis Selesai!</h2>
+            <p>Skor Akhir Anda:</p>
+            <div class="final-score" id="final-score-display">0</div>
+            <p id="result-message">Luar Biasa!</p>
+            
+            <div class="result-actions">
+                <button class="btn" onclick="location.reload()">Ke Menu Utama</button>
+            </div>
+        </div>
+
+    </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const userDisplayElement = document.getElementById('user-display-name');
+            const welcomeMessageElement = document.getElementById('welcome-message');
+            const logoutBtn = document.getElementById('logout-btn');
+
+            const userData = sessionStorage.getItem('loggedInUser');
+
+            if (userData) {
+                const user = JSON.parse(userData);
+                // Perbarui nama di header dan pesan selamat datang
+                userDisplayElement.textContent = user.nama_tampilan;
+                welcomeMessageElement.textContent = `Selamat Datang, ${user.nama_tampilan}!`;
+            } else {
+                // Jika tidak ada data user, paksa kembali ke halaman login
+                alert('Anda harus login untuk mengakses halaman ini.');
+                window.location.href = 'index.html';
+            }
+
+            // Fungsi untuk logout
+            logoutBtn.addEventListener('click', function(event) {
+                event.preventDefault();
+                sessionStorage.removeItem('loggedInUser');
+                window.location.href = 'index.html';
+            });
+        });
+    </script>
+
+    <!-- START DATA: questions.js -->
+    <script>
+        // DATA SOAL KECERDASAN ARTIFISIAL (AI)
+        const soalAI = [
+            {
+                id: 1,
+                question: "Seorang siswa ingin menampilkan bilangan genap dari 2 hingga 10 menggunakan Python. Manakah kode range() yang benar?",
+                options: ["range(2, 10, 2)", "range(2, 11, 2)", "range(1, 10, 2)", "range(2, 11, 1)", "range(2, 10, 1)"],
+                answer: "range(2, 11, 2)", 
+                type: "single"
+            },
+            {
+                id: 2,
+                question: "Konsep OOP dalam Python mencakup...",
+                options: ["Class", "Attribute", "Looping", "Inheritance", "Object"],
+                answer: ["Class", "Attribute", "Inheritance", "Object"],
+                type: "multiple"
+            },
+            {
+                id: 3,
+                question: "Class dalam Python dapat diibaratkan sebagai...",
+                options: ["Variabel penyimpanan data", "Fungsi bawaan", "Cetak biru (blueprint) untuk membuat objek", "Objek nyata di kehidupan sehari-hari", "Tipe data bawaan"],
+                answer: "Cetak biru (blueprint) untuk membuat objek",
+                type: "single"
+            },
+            {
+                id: 4,
+                question: "Dampak positif otomatisasi oleh AI adalah...",
+                options: ["Produksi lebih cepat", "Kehilangan pekerjaan", "Biaya rendah", "Kualitas meningkat", "Efisiensi"],
+                answer: ["Produksi lebih cepat", "Biaya rendah", "Kualitas meningkat", "Efisiensi"],
+                type: "multiple"
+            },
+            {
+                id: 5,
+                question: "Manakah pernyataan yang tepat tentang Machine Learning (ML)?",
+                options: ["Mesin tidak bisa meningkatkan performanya", "Mesin belajar tanpa data historis", "Mesin belajar dari data tanpa diprogram eksplisit", "Mesin bekerja hanya berdasarkan perintah manual", "Mesin hanya bisa membaca data teks"],
+                answer: "Mesin belajar dari data tanpa diprogram eksplisit",
+                type: "single"
+            },
+            {
+                id: 6,
+                question: "Atribut jenis_mesin pada objek motor (motor.jenis_mesin) adalah contoh dari Atribut Instance. Mengapa atribut ini disebut demikian?",
+                options: ["Karena nilainya diwarisi dari kelas induk", "Karena nilainya sama untuk semua objek", "Karena dideklarasikan di luar konstruktor __init__", "Karena hanya dapat diubah oleh class method", "Karena nilainya dapat berbeda untuk setiap objek yang dibuat dari kelas yang sama"],
+                answer: "Karena nilainya dapat berbeda untuk setiap objek yang dibuat dari kelas yang sama",
+                type: "single"
+            },
+            {
+                id: 7,
+                question: "Pilih semua pernyataan yang BENAR mengenai Tipe Data Koleksi Python berikut:",
+                options: [
+                "Set: Mutable & Unordered (elemen unik)",
+                "Tuple: Immutable & Ordered",
+                "List: Mutable & Ordered"
+                ],
+                answer: ["Set: Mutable & Unordered (elemen unik)", "Tuple: Immutable & Ordered", "List: Mutable & Ordered"],
+                type: "multiple" // Converted from match to multiple check
+            },
+            {
+                id: 8,
+                question: "Manfaat penerapan AI di masyarakat...",
+                options: ["Menyebarkan hoax", "Mengurangi kesalahan", "Mempercepat pekerjaan", "Membuat keputusan lebih akurat", "Meningkatkan efisiensi layanan"],
+                answer: ["Mengurangi kesalahan", "Mempercepat pekerjaan", "Membuat keputusan lebih akurat", "Meningkatkan efisiensi layanan"],
+                type: "multiple"
+            },
+            {
+                id: 9,
+                question: "Konsep reinforcement learning dapat dianalogikan dengan...",
+                options: ["Anak kecil belajar berjalan dengan coba-coba", "Siswa menghafal pelajaran dari buku", "Menyusun data berdasarkan label yang ada", "Mengelompokkan bunga berdasarkan kemiripan", "Guru memberi materi ke siswa"],
+                answer: "Anak kecil belajar berjalan dengan coba-coba",
+                type: "single"
+            },
+            {
+                id: 10,
+                question: "Tipe data primitif dalam Python yang dapat menampung nilai hasil perhitungan adalah...",
+                options: ["String", "Set", "Integer", "Boolean", "Float"],
+                answer: ["Integer", "Float"],
+                type: "multiple"
+            },
+            {
+                id: 11,
+                question: "Tipe data collection pada Python adalah…",
+                options: ["Tuple", "Dictionary", "List", "Set", "Flowchart"],
+                answer: ["Tuple", "Dictionary", "List", "Set"],
+                type: "multiple"
+            },
+            {
+                id: 12,
+                question: "Contoh aplikasi kecerdasan artifisial Generatif ditunjukkan oleh...",
+                options: ["Gemini", "Google Maps", "Zoom", "ChatGPT", "Midjourney"],
+                answer: ["Gemini", "ChatGPT", "Midjourney"],
+                type: "multiple"
+            },
+            {
+                id: 13,
+                question: "Jika fungsi volume_balok(panjang, lebar, tinggi) dipanggil dengan volume_balok(6, 4, 5), maka hasil yang dikembalikan adalah...",
+                options: ["150", "200", "60", "100", "120"],
+                answer: "120",
+                type: "single"
+            },
+            {
+                id: 14,
+                question: "Bagaimana dampak jangka panjang penggunaan AI terhadap lapangan kerja manusia?",
+                options: [
+                "Menggeser jenis pekerjaan yang tersedia, pekerjaan manual berkurang, tetapi peluang untuk pekerjaan yang lebih kreatif dan strategis bertambah",
+                "Meningkatkan jumlah pekerjaan bagi manusia secara drastis",
+                "Tidak berpengaruh signifikan",
+                "Menghilangkan semua jenis pekerjaan manusia",
+                "Mengurangi kesenjangan ekonomi secara otomatis"
+                ],
+                answer: "Menggeser jenis pekerjaan yang tersedia, pekerjaan manual berkurang, tetapi peluang untuk pekerjaan yang lebih kreatif dan strategis bertambah",
+                type: "single"
+            },
+            {
+                id: 15,
+                question: "Yang termasuk komponen dalam siklus pengembangan AI adalah …",
+                options: ["Deployment", "Problem Definition", "Algoritma Sorting Bubble", "Data Collection & Preparation", "Evaluation"],
+                answer: ["Deployment", "Problem Definition", "Data Collection & Preparation", "Evaluation"],
+                type: "multiple"
+            },
+            {
+                id: 16,
+                question: "Konsep reinforcement learning dapat dianalogikan dengan...",
+                options: ["Anak kecil belajar berjalan dengan coba-coba", "Siswa menghafal", "Menyusun data label", "Clustering", "Guru memberi materi"],
+                answer: "Anak kecil belajar berjalan dengan coba-coba",
+                type: "single"
+            },
+            {
+                id: 17,
+                question: "Kode Python: `if 7 % 2 != 0: print('Ganjil') else: print('Genap')`. Outputnya adalah:",
+                options: ["Ganjil", "Genap", "7", "Error", "Tidak muncul output"],
+                answer: "Ganjil",
+                type: "single"
+            },
+            {
+                id: 18,
+                question: "Manfaat penerapan AI di masyarakat (Pilih yang benar)...",
+                options: ["Mengurangi kesalahan", "Mempercepat pekerjaan", "Keputusan lebih akurat", "Efisiensi layanan", "Semua benar"],
+                answer: "Semua benar",
+                type: "single"
+            },
+            {
+                id: 19,
+                question: "OOP dalam Python bertujuan untuk...",
+                options: ["Mempercepat perhitungan numerik", "Membuat model ML", "Menyimpan data tabel", "Visualisasi data", "Mempermudah pengelolaan kode dengan konsep objek"],
+                answer: "Mempermudah pengelolaan kode dengan konsep objek",
+                type: "single"
+            },
+            {
+                id: 20,
+                question: "Sebuah perusahaan retail ingin memprediksi pola pembelian pelanggan berdasarkan riwayat transaksi berlabel (membeli/tidak). Metode yang tepat adalah:",
+                options: ["Reinforcement Learning", "Semi-supervised Learning", "Unsupervised Learning", "Deep Learning", "Supervised Learning"],
+                answer: "Supervised Learning",
+                type: "single"
+            },
+            {
+                id: 21,
+                question: "Output kode `for i in range(1, 5): print(i)` adalah:",
+                options: ["1, 2, 3, 4", "1, 2, 3, 4, 5", "2, 4, 6, 8", "2, 3, 4", "0, 1, 2, 3, 5"],
+                answer: "1, 2, 3, 4",
+                type: "single"
+            },
+            {
+                id: 22,
+                question: "Pernyataan yang tepat tentang kecerdasan artifisial adalah …",
+                options: [
+                "Alat pengganti manusia mutlak",
+                "Kemampuan mesin atau sistem komputer untuk meniru kecerdasan manusia",
+                "Sistem perintah suara saja",
+                "Mesin pengganti manusia sepenuhnya",
+                "Teknologi khusus kesehatan"
+                ],
+                answer: "Kemampuan mesin atau sistem komputer untuk meniru kecerdasan manusia",
+                type: "single"
+            },
+            {
+                id: 23,
+                question: "Ciri AI Generatif adalah …",
+                options: ["Mengganti kasir", "Membuat gambar dari teks", "Menganalisis data", "Membuat musik baru", "Menciptakan konten asli"],
+                answer: ["Membuat gambar dari teks", "Membuat musik baru", "Menciptakan konten asli"],
+                type: "multiple"
+            },
+            {
+                id: 24,
+                question: "Seorang siswa membuat class Mobil dengan atribut warna. Objek mobil1.warna='merah', mobil2.warna='biru'. Kesimpulannya?",
+                options: [
+                "mobil1 dan mobil2 memiliki nilai atribut instance yang berbeda",
+                "Atribut warna adalah atribut class",
+                "Objek tidak bisa memiliki atribut berbeda",
+                "Atribut tidak dapat diubah",
+                "Semua objek harus sama warnanya"
+                ],
+                answer: "mobil1 dan mobil2 memiliki nilai atribut instance yang berbeda",
+                type: "single"
+            },
+            {
+                id: 25,
+                question: "Pilih semua pernyataan yang BENAR mengenai fungsi Python berikut:",
+                options: [
+                "print: Menampilkan output",
+                "len: Menghitung panjang data",
+                "input: Menerima masukan pengguna"
+                ],
+                answer: ["print: Menampilkan output", "len: Menghitung panjang data", "input: Menerima masukan pengguna"],
+                type: "multiple" // Converted from match
+            },
+            {
+                id: 26,
+                question: "Risiko penggunaan Generative AI untuk materi belajar adalah...",
+                options: ["Menggantikan guru", "Konten yang dihasilkan mungkin tidak sesuai kurikulum atau mengandung bias", "Materi selalu akurat", "Tidak butuh data", "Hanya untuk hiburan"],
+                answer: "Konten yang dihasilkan mungkin tidak sesuai kurikulum atau mengandung bias",
+                type: "single"
+            },
+            {
+                id: 27,
+                question: "Model mempelajari pola dari jutaan transaksi keuangan berlabel ('penipuan' atau 'aman'). Metode yang digunakan adalah...",
+                options: ["Deep learning", "Semi-supervised", "Unsupervised", "Supervised learning", "Reinforcement"],
+                answer: "Supervised learning",
+                type: "single"
+            },
+            {
+                id: 28,
+                question: "Pilih semua pasangan metode ML yang BENAR:",
+                options: ["Unsupervised: Pola tersembunyi/Tanpa label", "Reinforcement: Reward & Penalty", "Supervised: Data berlabel"],
+                answer: ["Unsupervised: Pola tersembunyi/Tanpa label", "Reinforcement: Reward & Penalty", "Supervised: Data berlabel"],
+                type: "multiple" // Converted from match
+            },
+            {
+                id: 29,
+                question: "Tipe data primitif untuk menampung hasil perhitungan desimal?",
+                options: ["Integer", "Float", "String", "Boolean", "List"],
+                answer: "Float",
+                type: "single"
+            },
+            {
+                id: 30,
+                question: "Komponen yang harus ditentukan manual di 'while loop' tapi otomatis di 'for loop range()' adalah?",
+                options: ["Fungsi print", "Kondisi berhenti (Stop)", "Nilai awal (Start)", "Logika", "step"],
+                answer: ["Kondisi berhenti (Stop)", "Nilai awal (Start)", "step"],
+                type: "multiple"
+            }
+        ];
+
+        // DATA SOAL FTTH (Fiber To The Home)
+        const soalFTTH = [
+            {
+                id: 1,
+                question: "Perbandingan kabel fiber optik kaca murni vs kaca campuran plastik. Pernyataan yang benar adalah...",
+                options: [
+                "Kaca campuran lebih baik kualitasnya",
+                "Kaca campuran cocok untuk jarak jauh",
+                "Redaman kabel lebih kecil pada kaca murni",
+                "Semakin murni kaca semakin tidak efisien",
+                "Cahaya lebih banyak terserap di kaca murni"
+                ],
+                answer: "Redaman kabel lebih kecil pada kaca murni",
+                type: "single"
+            },
+            {
+                id: 2,
+                question: "Seorang teknisi menyambung ulang kabel 6 tube (6 core/tube). Core yang disambung: Core 17, Core 2, Core 30. Tentukan kode warna Core 2.",
+                options: ["Putih", "Hitam", "Merah", "Abu-abu", "Orange"],
+                answer: "Orange",
+                type: "single"
+            },
+            {
+                id: 3,
+                question: "Tentukan kode warna untuk Core ke-30 (pada kabel 6 tube, 6 core/tube).",
+                options: ["Putih", "Hitam", "Merah", "Abu-abu", "Orange"],
+                answer: "Putih",
+                type: "single"
+            },
+            {
+                id: 4,
+                question: "Tentukan kode warna untuk Core ke-17 (pada kabel 6 tube, 6 core/tube).",
+                options: ["Putih", "Hitam", "Merah", "Abu-abu", "Orange"],
+                answer: "Abu-abu",
+                type: "single"
+            },
+            {
+                id: 5,
+                question: "Instalasi fiber optik di dalam tanah dengan pipa pelindung disebut...",
+                options: ["Indoor", "Aerial", "Direct Buried", "Duct", "Submarine"],
+                answer: "Duct",
+                type: "single"
+            },
+            {
+                id: 6,
+                question: "Komponen wajib pada kabel bawah laut (Submarine) untuk menahan tekanan dan air...",
+                options: ["Rip cord", "Aluminium water barrier", "Stranded Steel Wire", "Polyethylene", "Aluminium Tube"],
+                answer: ["Rip cord", "Aluminium water barrier", "Stranded Steel Wire", "Polyethylene", "Aluminium Tube"],
+                type: "multiple"
+            },
+            {
+                id: 7,
+                question: "Syarat agar sinyal cahaya bisa terkirim dalam serat optik (Total Internal Reflection) adalah...",
+                options: [
+                "Indeks bias core = cladding",
+                "Indeks bias cladding > core",
+                "Sudut datang = sudut kritis",
+                "Sudut datang < sudut kritis",
+                "Indeks bias core selalu dibuat lebih besar daripada indeks bias cladding"
+                ],
+                answer: "Indeks bias core selalu dibuat lebih besar daripada indeks bias cladding",
+                type: "single"
+            },
+            {
+                id: 8,
+                question: "Lapisan yang ditempatkan di antara kulit kabel dan water blocking yang berfungsi memperkuat kabel adalah...",
+                options: ["Aramid yarn / Strength member", "Core", "Cladding", "Buffer", "Jelly"],
+                answer: "Aramid yarn / Strength member",
+                type: "single"
+            },
+            {
+                id: 9,
+                question: "Perangkat untuk mendeteksi lokasi putus/bending dan mengukur redaman total kabel adalah...",
+                options: ["OSA", "VFL", "Optical Time Domain Reflectometer (OTDR)", "Fusion Splicer", "OPM"],
+                answer: "Optical Time Domain Reflectometer (OTDR)",
+                type: "single"
+            },
+            {
+                id: 10,
+                question: "Perangkat 'Cleaver' berfungsi untuk...",
+                options: [
+                "Menyambungkan core",
+                "Mendeteksi daya",
+                "Mengupas kulit kabel",
+                "Mendeteksi crack",
+                "Memotong core agar rata dan dapat disambungkan dengan sempurna"
+                ],
+                answer: "Memotong core agar rata dan dapat disambungkan dengan sempurna",
+                type: "single"
+            },
+            {
+                id: 11,
+                question: "Bagian serat optik yang terbuat dari gelas dengan indeks bias lebih kecil dari core dan berfungsi sebagai cermin (waveguide) adalah...",
+                options: ["Cladding", "Core", "Buffer", "Strength Member", "Coating"],
+                answer: "Cladding",
+                type: "single"
+            },
+            {
+                id: 12,
+                question: "Arti label kabel 'SM-A-LT SS 12/6T' adalah...",
+                options: ["Instalasi Udara (Aerial)", "Kapasitas total 72", "Slotted Core", "Stranded Steel", "Kapasitas per-tube adalah 2 core"],
+                answer: ["Instalasi Udara (Aerial)", "Kapasitas per-tube adalah 2 core"],
+                type: "multiple"
+            },
+            {
+                id: 13,
+                question: "Hal yang TIDAK perlu dilakukan teknisi setelah perbaikan di rumah pelanggan...",
+                options: [
+                "Meminta waktu istirahat untuk makan hidangan pelanggan",
+                "Memastikan pekerjaan selesai",
+                "Merapikan alat",
+                "Memastikan Berita Acara",
+                "Meminta feedback"
+                ],
+                answer: "Meminta waktu istirahat untuk makan hidangan pelanggan",
+                type: "single"
+            },
+            {
+                id: 14,
+                question: "Kabel yang tepat untuk menghubungkan ODP (Tiang) ke OTP (Rumah Pelanggan) adalah...",
+                options: ["UTP", "Patchcord", "Indoor", "Aerial", "Dropcore"],
+                answer: "Dropcore",
+                type: "single"
+            },
+            {
+                id: 15,
+                question: "Kondisi perambatan cahaya: Jika sudut datang LEBIH BESAR dari sudut kritis, maka terjadi...",
+                options: ["Refraksi", "Refleksi Total", "Merambat lurus", "Dispersi", "Absorpsi"],
+                answer: "Refleksi Total",
+                type: "single"
+            },
+            {
+                id: 16,
+                question: "Pada kabel 12 Core / 6 Tube (2 core per tube). Apa warna Tube ke-1 dan Tube ke-2?",
+                options: ["Biru & Orange", "Hijau & Coklat", "Abu & Putih", "Merah & Hitam", "Biru & Hijau"],
+                answer: "Biru & Orange",
+                type: "single"
+            },
+            {
+                id: 17,
+                question: "Fungsi Thixotropic Gel (Jelly) pada loose tube adalah...",
+                options: [
+                "Penguat kabel",
+                "Isian padat",
+                "Konduktor",
+                "Agar serat optik bebas bergerak dan terlindung dari air/gesekan",
+                "Penutup strength member"
+                ],
+                answer: "Agar serat optik bebas bergerak dan terlindung dari air/gesekan",
+                type: "single"
+            },
+            {
+                id: 18,
+                question: "Jika cahaya dibiaskan sejajar dengan permukaan (sudut bias 90 derajat), maka sudut datangnya disebut...",
+                options: ["Refraksi", "Indeks bias", "Refleksi", "Total internal reflection", "Critical angle (Sudut Kritis)"],
+                answer: "Critical angle (Sudut Kritis)",
+                type: "single"
+            },
+            {
+                id: 19,
+                question: "Fungsi lapisan CORE adalah...",
+                options: [
+                "Pelengkap kekuatan",
+                "Penguat tengah",
+                "Tempat merambatnya cahaya dari ujung satu ke ujung lainnya",
+                "Cermin pemantul",
+                "Pelindung mekanis"
+                ],
+                answer: "Tempat merambatnya cahaya dari ujung satu ke ujung lainnya",
+                type: "single"
+            },
+            {
+                id: 20,
+                question: "Contoh penerapan empati pada pelanggan, KECUALI...",
+                options: [
+                "Dengarkan keluhan",
+                "Meminta maaf dan menyuruh pelanggan baca buku manual sendiri",
+                "Tunjukkan peduli",
+                "Sampaikan maaf tulus",
+                "Selesaikan masalah segera"
+                ],
+                answer: "Meminta maaf dan menyuruh pelanggan baca buku manual sendiri",
+                type: "single"
+            },
+            {
+                id: 21,
+                question: "Cara membersihkan jelly (thixotropic gel) pada core yang benar adalah...",
+                options: ["Siram alkohol", "Biarkan saja", "Tissue basah", "Membersihkan dengan tissue yang dibasahi alkohol", "Bedak cair"],
+                answer: "Membersihkan dengan tissue yang dibasahi alkohol",
+                type: "single"
+            },
+            {
+                id: 22,
+                question: "Alasan kabel fiber optik marak digunakan, KECUALI...",
+                options: [
+                "Transmisi data lebih lamban dibanding kabel konvensional",
+                "Bandwidth lebar",
+                "Kapasitas transmisi besar",
+                "Redaman kecil",
+                "Harga kompetitif"
+                ],
+                answer: "Transmisi data lebih lamban dibanding kabel konvensional",
+                type: "single"
+            },
+            {
+                id: 23,
+                question: "Perbedaan utama kabel Slotted Core dibanding Loose Tube adalah...",
+                options: ["Bahan slot", "Hanya indoor", "Loose tube lebih kuat", "Bahan PBTP", "Slotted Core mampu menampung kapasitas serat (ribuan) jauh lebih besar"],
+                answer: "Slotted Core mampu menampung kapasitas serat (ribuan) jauh lebih besar",
+                type: "single"
+            },
+            {
+                id: 24,
+                question: "Fungsi Splitter Optik dalam ODP adalah...",
+                options: ["Penanda port", "Pelindung sambungan", "Isolator cahaya", "Membagi daya optik dari satu input ke beberapa output", "Merapikan kabel"],
+                answer: "Membagi daya optik dari satu input ke beberapa output",
+                type: "single"
+            },
+            {
+                id: 25,
+                question: "Profil Graded Index (Multimode) memiliki ciri khas...",
+                options: ["Indeks bias konstan", "Untuk jarak sangat jauh", "Indeks bias berubah berangsur-angsur (parabola) untuk mengurangi dispersi", "Hanya 1 mode cahaya", "Core sangat kecil"],
+                answer: "Indeks bias berubah berangsur-angsur (parabola) untuk mengurangi dispersi",
+                type: "single"
+            },
+            {
+                id: 26,
+                question: "Fungsi utama kode warna pada serat optik adalah...",
+                options: ["Standar internasional", "Mempermudah identifikasi serat saat penyambungan", "Kurangi dispersi", "Tentukan panjang gelombang", "Hindari putus"],
+                answer: "Mempermudah identifikasi serat saat penyambungan",
+                type: "single"
+            },
+            {
+                id: 27,
+                question: "Pilih jenis kabel yang sesuai: Area perumahan yang mengizinkan galian TANPA pipa pelindung.",
+                options: ["Duct", "Direct Buried", "Indoor", "Submarine", "Aerial"],
+                answer: "Direct Buried",
+                type: "single"
+            },
+            {
+                id: 28,
+                question: "Pilih jenis kabel yang sesuai: Area perumahan yang mengizinkan menanam tiang.",
+                options: ["Duct", "Direct Buried", "Indoor", "Submarine", "Aerial"],
+                answer: "Aerial",
+                type: "single"
+            },
+            {
+                id: 29,
+                question: "Label kabel: Graded Index, Tanam Langsung (Buried), Loose Tube, Solid Steel, 96 Core / 8 Tube.",
+                options: ["GI-B-LT SS 96/8T", "GI-D-TB WS 96/8T", "MM-B-LT SS 96/8T", "SM-D-SC GRP 12/96T", "GI-D-SC WS 12/8T"],
+                answer: "GI-B-LT SS 96/8T",
+                type: "single"
+            }
+        ];
+    </script>
+    <!-- END DATA -->
+
+    <!-- START LOGIC: logic.js -->
+    <script>
+        // === STATE MANAGEMENT ===
+        let allQuestions = { ai: soalAI, ftth: soalFTTH };
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = {}; // { 0: [0], 1: [1, 3], ... }
+        let flaggedQuestions = new Set(); // {0, 5, ...}
+        let quizInterval;
+        let timeRemaining;
+
+        // === DOM ELEMENTS ===
+        const dashboardView = document.getElementById('dashboard');
+        const quizView = document.getElementById('quiz-view');
+        const resultView = document.getElementById('result-view');
+        
+        const questionNavGrid = document.getElementById('question-nav-grid');
+        const progressText = document.getElementById('progress-text');
+        const currentScoreText = document.getElementById('current-score');
+        const flagBtn = document.getElementById('flag-btn');
+        const flagBtnText = document.getElementById('flag-btn-text');
+
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        
+        const finalScoreDisplay = document.getElementById('final-score-display');
+        const resultMessage = document.getElementById('result-message');
+
+        // === CORE FUNCTIONS ===
+        function startQuiz(subject) {
+            currentQuestions = [...allQuestions[subject.toLowerCase()]];
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = {};
+            flaggedQuestions.clear();
+            
+            renderNav();
+
+            dashboardView.style.display = 'none';
+            resultView.style.display = 'none';
+            quizView.style.display = 'block';
+            
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            // Stop any feedback timeouts from previous question
+            if (window.feedbackTimeout) clearTimeout(window.feedbackTimeout);
+
+            const questionData = currentQuestions[currentQuestionIndex];
+            questionText.innerText = questionData.question;
+            optionsContainer.innerHTML = '';
+
+            // Render options based on type
+            const optionChars = 'ABCDE';
+            questionData.options.forEach((option, index) => {
+                const item = document.createElement('div');
+                item.className = 'option-item';
+                item.classList.add(questionData.type === 'single' ? 'single-choice' : 'multiple-choice');
+                if (questionData.type === 'single') {
+                    item.dataset.prefix = optionChars[index];
+                }
+                item.innerHTML = `<span>${option}</span>`; // Wrap text in span
+                item.onclick = () => selectOption(index, questionData.type);
+                optionsContainer.appendChild(item);
+            });
+
+            // Restore previous selections for this question
+            if (userAnswers[currentQuestionIndex]) {
+                userAnswers[currentQuestionIndex].forEach(selectedIndex => {
+                    optionsContainer.children[selectedIndex].classList.add('selected');
+                });
+            }
+
+            updateButtons();
+            updateNav();
+        }
+
+        function selectOption(index, type) {
+            const options = optionsContainer.children;
+            const selectedOption = options[index];
+
+            if (type === 'single') {
+                // Clear previous single selection
+                for (let opt of options) {
+                    opt.classList.remove('selected');
+                }
+                selectedOption.classList.add('selected');
+                userAnswers[currentQuestionIndex] = [index];
+            } else if (type === 'multiple') {
+                selectedOption.classList.toggle('selected');
+                // Update answers array for multiple choice
+                const selectedIndices = [];
+                for (let i = 0; i < options.length; i++) {
+                    if (options[i].classList.contains('selected')) {
+                        selectedIndices.push(i);
+                    }
+                }
+                userAnswers[currentQuestionIndex] = selectedIndices;
+            }
+            updateButtons();
+            updateNav(); // Mark as answered
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            const hasAnswered = userAnswers[currentQuestionIndex] && userAnswers[currentQuestionIndex].length > 0;
+            
+            // If user hasn't answered, just move to next question.
+            // If they have, check answer and show feedback first.
+            if (hasAnswered && !optionsContainer.children[0].classList.contains('correct') && !optionsContainer.children[0].classList.contains('wrong')) {
+                checkAnswerAndProceed();
+            } else {
+                proceedToNext();
+            }
+        }
+
+        function checkAnswerAndProceed() {
+            const questionData = currentQuestions[currentQuestionIndex];
+            const selectedIndices = userAnswers[currentQuestionIndex] || [];
+            const options = optionsContainer.children;
+            let isCorrect = false;
+
+            // Determine if the answer is correct
+            if (questionData.type === 'single') {
+                const correctIndex = questionData.options.indexOf(questionData.answer);
+                isCorrect = selectedIndices[0] === correctIndex;
+            } else { // multiple
+                const correctOptions = new Set(questionData.answer);
+                const selectedOptions = new Set(selectedIndices.map(i => questionData.options[i]));
+                isCorrect = correctOptions.size === selectedOptions.size && [...correctOptions].every(opt => selectedOptions.has(opt));
+            }
+
+            if (isCorrect) score++;
+
+            // Visual Feedback
+            for (let i = 0; i < options.length; i++) {
+                const optText = questionData.options[i];
+                const correctAnswers = Array.isArray(questionData.answer) ? questionData.answer : [questionData.answer];
+
+                if (correctAnswers.includes(optText)) {
+                    options[i].classList.add('correct');
+                } else if (selectedIndices.includes(i)) {
+                    options[i].classList.add('wrong');
+                }
+                options[i].onclick = null; // Disable further clicks
+            }
+            
+            updateButtons(); // Disable all buttons during timeout
+
+            // Delay before moving to the next question
+            window.feedbackTimeout = setTimeout(proceedToNext, 1200);
+        }
+
+        function proceedToNext() {
+            if (window.feedbackTimeout) clearTimeout(window.feedbackTimeout);
+
+            if (currentQuestionIndex < currentQuestions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function jumpToQuestion(index) {
+            currentQuestionIndex = index;
+            loadQuestion();
+        }
+        
+        function toggleFlag() {
+            if (flaggedQuestions.has(currentQuestionIndex)) {
+                flaggedQuestions.delete(currentQuestionIndex);
+            } else {
+                flaggedQuestions.add(currentQuestionIndex);
+            }
+            updateButtons();
+            updateNav();
+        }
+
+        function showResults() {
+            quizView.style.display = 'none';
+            resultView.style.display = 'block';
+            
+            const finalScore = Math.round((score / currentQuestions.length) * 100);
+            finalScoreDisplay.innerText = finalScore;
+
+            if (finalScore >= 90) {
+                resultMessage.innerText = "Luar Biasa! Kamu sangat menguasai materi ini. 🎉";
+            } else if (finalScore >= 70) {
+                resultMessage.innerText = "Bagus! Terus tingkatkan belajarmu. 👍";
+            } else {
+                resultMessage.innerText = "Jangan menyerah! Coba pelajari materi lagi ya. 💪";
+            }
+        }
+
+
+        // === UI UPDATE FUNCTIONS ===
+        function renderNav() {
+            questionNavGrid.innerHTML = '';
+            for (let i = 0; i < currentQuestions.length; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'nav-btn';
+                btn.innerText = i + 1;
+                btn.onclick = () => jumpToQuestion(i);
+                questionNavGrid.appendChild(btn);
+            }
+        }
+
+        function updateNav() {
+            const navBtns = questionNavGrid.children;
+            for (let i = 0; i < navBtns.length; i++) {
+                navBtns[i].classList.remove('current', 'answered', 'flagged');
+                if (userAnswers[i] && userAnswers[i].length > 0) {
+                    navBtns[i].classList.add('answered');
+                }
+                if (flaggedQuestions.has(i)) {
+                    navBtns[i].classList.add('flagged');
+                }
+                if (i === currentQuestionIndex) {
+                    navBtns[i].classList.add('current');
+                }
+            }
+        }
+
+        function updateButtons() {
+            const hasAnswer = userAnswers[currentQuestionIndex] && userAnswers[currentQuestionIndex].length > 0;
+            
+            // Next button logic
+            nextBtn.disabled = !hasAnswer;
+            nextBtn.innerText = currentQuestionIndex === currentQuestions.length - 1 ? 'Lihat Hasil' : 'Lanjut';
+            
+            // Prev button logic
+            prevBtn.disabled = currentQuestionIndex === 0;
+
+            // Flag button logic
+            if (flaggedQuestions.has(currentQuestionIndex)) {
+                flagBtn.classList.add('active');
+                flagBtnText.innerText = 'Hapus Tanda';
+            } else {
+                flagBtn.classList.remove('active');
+                flagBtnText.innerText = 'Tandai Soal';
+            }
+            
+            progressText.innerText = `Soal ${currentQuestionIndex + 1} / ${currentQuestions.length}`;
+
+            // Disable all option clicks if feedback is being shown
+            const isShowingFeedback = optionsContainer.children[0]?.classList.contains('correct') || optionsContainer.children[0]?.classList.contains('wrong');
+            if(isShowingFeedback) {
+                prevBtn.disabled = true;
+                nextBtn.disabled = true;
+                flagBtn.disabled = true;
+                questionNavGrid.style.pointerEvents = 'none';
+            } else {
+                flagBtn.disabled = false;
+                questionNavGrid.style.pointerEvents = 'auto';
+            }
+        }
+        
+        // Add event listener for the flag button
+        flagBtn.addEventListener('click', toggleFlag);
+
+    </script>
+    <!-- END LOGIC -->
+</body>
+</html>

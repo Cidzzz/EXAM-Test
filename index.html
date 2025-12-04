@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DWI-EXAM - Login</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <h1>DWI-EXAM</h1>
+                <p>Silakan masuk untuk memulai sesi ujian Anda.</p>
+            </div>
+            <form id="login-form">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <p id="error-message" class="error-message"></p>
+                <button type="submit" class="btn">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Data Akun -->
+    <script src="accounts.js"></script>
+
+    <!-- Logika Login -->
+    <script>
+        document.getElementById('login-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Mencegah form dari submit standar
+
+            const usernameInput = document.getElementById('username').value;
+            const passwordInput = document.getElementById('password').value;
+            const errorMessage = document.getElementById('error-message');
+
+            // Cari akun yang cocok di dalam array userAccounts
+            const foundUser = userAccounts.find(account => 
+                account.username === usernameInput && account.password === passwordInput
+            );
+
+            if (foundUser) {
+                // Jika akun ditemukan, simpan data user di sessionStorage
+                sessionStorage.setItem('loggedInUser', JSON.stringify(foundUser));
+                // Arahkan ke dashboard
+                window.location.href = 'dashboard.html';
+            } else {
+                // Jika akun tidak ditemukan, tampilkan pesan error
+                errorMessage.textContent = 'Username atau password salah. Silakan coba lagi.';
+                console.log('Login gagal.');
+            }
+        });
+    </script>
+
+</body>
+</html>
