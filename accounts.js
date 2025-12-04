@@ -1,7 +1,7 @@
 const userAccounts = [
     {
         username: '1',
-        password: '1',
+        password: '12',
         nama_tampilan: 'Dwi'
     },
     {
@@ -26,6 +26,7 @@ const userAccounts = [
     }
 
 ];
+
 
 
 
